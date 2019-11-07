@@ -1,0 +1,41 @@
+import java.io.*;
+
+public class HuffmanCodeTest {
+
+    public static void main(String[] args) {
+        String text = "Ya pisal godniy kod, no ne dopisal";
+
+        // для простоты допустим, что количество символов не превосходит 256
+        int[] charFrequencies = new int[256];
+        // считываем символы и считаем их частоту
+        for (char c : text.toCharArray()) {
+            charFrequencies[c]++;
+        }
+
+        // строим дерево
+        HuffmanTree tree = HuffmanTree.buildHuffmanTree(charFrequencies);
+        System.out.printf("size before compression = %d%n", text.length() * 8);
+        String incoded = tree.incode(text);
+        System.out.println("incoded result = " + incoded);
+        System.out.printf("size after compression = %d%n", incoded.length());
+        String decoded = tree.decode(incoded);
+        System.out.println(decoded);
+
+        // вывод кодовой таблицы
+        tree.printCodes();
+
+        try(FileOutputStream fos=new FileOutputStream("res/input.txt.cmp"))
+        {
+            // перевод строки в байты
+            byte[] buffer = incoded.getBytes();
+
+            fos.write(buffer, 0, buffer.length);
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        System.out.println("The file has been written");
+    }
+
+}
